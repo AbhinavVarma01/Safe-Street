@@ -135,12 +135,6 @@ app.post("/api/upload", async (req, res) => {
     }
 });
 
-// Ensure the separate classification endpoint is removed or commented out
-/*
-app.post("/api/reports/:id/classify", async (req, res) => {
-    // ... logic ...
-});
-*/
 
 app.get("/api/images", async (req, res) => {
     try {
@@ -182,8 +176,7 @@ app.post("/api/auth/register", async (req, res) => {
             phoneNumber,
             email,
             password: hashedPassword,
-            role: userType, // This sets the role in the database
-            // Only add address fields for regular users
+            role: userType, 
             ...(userType === 'user' ? {
                 address: '',
                 city: '',
