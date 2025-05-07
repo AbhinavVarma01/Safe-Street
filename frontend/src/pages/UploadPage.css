@@ -1,19 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary-color: #8B4513;
-  --primary-hover: #A0522D;
-  --text-primary: #2C1810;
-  --text-secondary: #5D4037;
-  --border-color: #A1887F;
+  --primary-color: #1976D2;
+  --primary-hover: #1565C0;
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --border-color: #BDBDBD;
   --error-color: #D32F2F;
   --success-color: #388E3C;
   --background-color: #f8f9fa;
   --card-bg: #ffffff;
-  --card-border: rgba(139, 69, 19, 0.2);
+  --card-border: rgba(25, 118, 210, 0.2);
   --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   --input-bg: #ffffff;
-  --input-focus: rgba(139, 69, 19, 0.1);
+  --input-focus: rgba(25, 118, 210, 0.1);
 }
 
 * {
@@ -43,10 +43,17 @@
 }
 
 .sidebar-header {
+  margin-bottom: 30px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  margin-bottom: 2rem;
+  align-items: center;
+}
+
+.logo {
+  max-width: 180px;
+  height: auto;
+  margin: 0 auto;
+  display: block;
 }
 
 .sidebar-header h2 {
@@ -699,6 +706,13 @@
   color: var(--text-primary);
   font-size: 0.95rem;
   transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.read-only-field {
+  background-color: #f5f5f5 !important;
+  cursor: not-allowed;
+  opacity: 0.8;
+  border-color: #ddd !important;
 }
 
 .input-group select.form-select {
@@ -1523,6 +1537,62 @@
 }
 
 /* Success Popup Styles */
+
+/* Warning Popup Styles */
+.warning-popup {
+  background-color: #fff8e1;
+  border-color: #ffe082;
+  max-width: 450px;
+}
+
+.warning-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 15px;
+  background-color: #ff9800;
+  color: white;
+  border-radius: 50%;
+  font-size: 24px;
+}
+
+.warning-popup h3 {
+  color: #e65100;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.warning-popup p {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.secondary-button {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.secondary-button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Read-only field styles */
+.read-only-field {
+  background-color: #f5f5f5 !important;
+  cursor: not-allowed;
+  opacity: 0.8;
+  border-color: #ddd !important;
+}
 .success-popup {
   background: white;
   padding: 2rem;

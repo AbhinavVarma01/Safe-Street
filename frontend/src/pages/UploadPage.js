@@ -99,30 +99,34 @@ function UploadPage() {
     <div className="app-container">
       <nav className="sidebar">
         <div className="sidebar-header">
-          <h2>SafeStreet</h2>
+          <img src="/Logo.png" alt="SafeStreet Logo" className="logo" />
         </div>
         <div className="nav-links">
           <button 
             className={`nav-item ${activeTab === 'details' ? 'active' : ''}`} 
             onClick={() => handleTabChange('details')}
+            data-tab="details"
           >
             <FileText size={20} /><span>Image Details</span>
           </button>
           <button 
             className={`nav-item ${activeTab === 'upload' ? 'active' : ''}`} 
             onClick={() => handleTabChange('upload')} 
+            data-tab="upload"
           >
             <Upload size={20} /><span>Upload</span>
           </button>
           <button 
             className={`nav-item ${activeTab === 'history' ? 'active' : ''}`} 
             onClick={() => handleTabChange('history')}
+            data-tab="history"
           >
             <History size={20} /><span>History</span>
           </button>
           <button 
             className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`} 
             onClick={() => handleTabChange('profile')}
+            data-tab="profile"
           >
             <User size={20} /><span>Profile</span>
           </button>
@@ -180,6 +184,7 @@ function UploadPage() {
           <UploadComponent 
             userEmail={userEmail} 
             detailsComplete={detailsComplete}
+            setActiveTab={setActiveTab}
           />}
         
         {activeTab === 'history' && <PreviousUploads userEmail={userEmail} />}
@@ -340,8 +345,8 @@ Please keep your information up to date. Address details are required for image 
                   id="firstName" 
                   name="firstName" 
                   value={formData.firstName}
-                  onChange={handleChange} 
-                  placeholder="E.g., John"
+                  readOnly
+                  className="read-only-field"
                   required 
                 />
               </div>
@@ -352,8 +357,8 @@ Please keep your information up to date. Address details are required for image 
                   id="lastName" 
                   name="lastName" 
                   value={formData.lastName}
-                  onChange={handleChange} 
-                  placeholder="E.g., Doe"
+                  readOnly
+                  className="read-only-field"
                   required 
                 />
               </div>
@@ -366,8 +371,8 @@ Please keep your information up to date. Address details are required for image 
                   id="phoneNumber" 
                   name="phoneNumber" 
                   value={formData.phoneNumber}
-                  onChange={handleChange} 
-                  placeholder="E.g., 9876543210"
+                  readOnly
+                  className="read-only-field"
                 />
              </div>
           </div>
@@ -432,7 +437,7 @@ Please keep your information up to date. Address details are required for image 
   );
 }
 
-function UploadComponent({ userEmail, detailsComplete }) {
+function UploadComponent({ userEmail, detailsComplete, setActiveTab }) {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState('');
   const [loading, setLoading] = useState(false);
@@ -444,6 +449,36 @@ function UploadComponent({ userEmail, detailsComplete }) {
   const [showLoadingPopup, setShowLoadingPopup] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [hasExistingUploads, setHasExistingUploads] = useState(false);
+  const [showAddressWarning, setShowAddressWarning] = useState(false);
+
+  // Check if user has existing uploads when component mounts
+  useEffect(() => {
+    if (userEmail) {
+      const checkExistingUploads = async () => {
+        try {
+          const response = await fetch(`http://localhost:5000/api/images/user/${encodeURIComponent(userEmail)}`);
+          const data = await response.json();
+          
+          if (response.ok && data.success) {
+            const hasUploads = data.images && data.images.length > 0;
+            console.log('User has existing uploads:', hasUploads);
+            setHasExistingUploads(hasUploads);
+            
+            // Show warning immediately if they have uploads
+            if (hasUploads) {
+              console.log('Setting showAddressWarning to true');
+              setTimeout(() => setShowAddressWarning(true), 500);
+            }
+          }
+        } catch (error) {
+          console.error('Error checking existing uploads:', error);
+        }
+      };
+      
+      checkExistingUploads();
+    }
+  }, [userEmail]);
 
   if (!detailsComplete) {
     return (
@@ -457,6 +492,14 @@ function UploadComponent({ userEmail, detailsComplete }) {
   }
 
   const handleImageChange = (e) => {
+    // If user has existing uploads, show warning popup and prevent selection
+    if (hasExistingUploads) {
+      e.preventDefault();
+      console.log('Showing address warning popup from handleImageChange');
+      setShowAddressWarning(true);
+      return;
+    }
+    
     const file = e.target.files[0];
     if (file) {
       const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -479,6 +522,13 @@ function UploadComponent({ userEmail, detailsComplete }) {
     if (!image) {
       setStatusMessage({ message: "Please select an image first!", type: 'error' });
       return; 
+    }
+    
+    // If user has existing uploads, show warning popup
+    if (hasExistingUploads) {
+      console.log('Showing address warning popup from handleAnalyzeImage');
+      setShowAddressWarning(true);
+      return;
     }
 
     setLoading(true);
@@ -595,6 +645,8 @@ function UploadComponent({ userEmail, detailsComplete }) {
                setPreview('');
                setResult(null);
                setShowResult(false);
+               // Set hasExistingUploads to true so they can't upload again
+               setHasExistingUploads(true);
            } else {
                throw new Error(data.error || 'Failed to save the result');
            }
@@ -615,7 +667,15 @@ function UploadComponent({ userEmail, detailsComplete }) {
     <div className="upload-container">
       <div className="upload-box">
         <h2>Upload Road Image</h2>
-        <div className="upload-area" onClick={() => document.getElementById('fileInput').click()}>
+        <div className="upload-area" onClick={() => {
+          // If user has existing uploads, show warning popup instead of opening file dialog
+          if (hasExistingUploads) {
+            console.log('Showing address warning popup from upload area click');
+            setShowAddressWarning(true);
+          } else {
+            document.getElementById('fileInput').click();
+          }
+        }}>
           {preview ? (
             <img src={preview} alt="Preview" className="image-preview" />
           ) : (
@@ -716,6 +776,35 @@ function UploadComponent({ userEmail, detailsComplete }) {
             </div>
           </div>
         )}
+        
+        {/* Address Warning Popup */}
+        {showAddressWarning && (
+          <div className="loading-popup">
+            <div className="loading-popup-content warning-popup">
+              <div className="warning-icon">⚠️</div>
+              <h3>Address Already Used</h3>
+              <p>You have already submitted a report with your current address.</p>
+              <p>Please update your address in the Image Details section if you want to upload an image for a different location.</p>
+              <div className="popup-buttons">
+                <button 
+                  className="close-popup-button secondary-button"
+                  onClick={() => setShowAddressWarning(false)}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="close-popup-button"
+                  onClick={() => {
+                    setShowAddressWarning(false);
+                    setActiveTab('details');
+                  }}
+                >
+                  Go to Image Details
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -727,8 +816,6 @@ function PreviousUploads() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
-  const [newlyResolvedReports, setNewlyResolvedReports] = useState([]);
-  const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
     const fetchUploads = async () => {
@@ -738,9 +825,8 @@ function PreviousUploads() {
         const data = await response.json();
         
         if (data.success) {
-          // Get the last time the user checked their reports
-          const lastChecked = localStorage.getItem('lastReportCheck') || '2000-01-01T00:00:00.000Z';
-          const lastCheckedDate = new Date(lastChecked);
+          // Update the last time the user checked their reports
+          localStorage.setItem('lastReportCheck', new Date().toISOString());
           
           const sortedUploads = data.uploads.map(upload => {
             // Use the status and progress fields from the backend
@@ -755,21 +841,11 @@ function PreviousUploads() {
             new Date(b.uploadedAt) - new Date(a.uploadedAt)
           );
           
-          // Find reports that have been resolved since the last check
-          const resolved = sortedUploads.filter(upload => {
-            return upload.progress === 'Resolved';
-          });
-          
           // Update the last checked time
           localStorage.setItem('lastReportCheck', new Date().toISOString());
           
-          // Set the uploads and newly resolved reports
+          // Set the uploads
           setUploads(sortedUploads);
-          
-          if (resolved.length > 0) {
-            setNewlyResolvedReports(resolved);
-            setShowNotification(true);
-          }
         } else {
           setError(data.error || "Failed to fetch uploads");
         }

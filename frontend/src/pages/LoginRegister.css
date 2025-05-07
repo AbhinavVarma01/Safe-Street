@@ -120,15 +120,19 @@ html, body {
 
 .auth-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
+  margin-top: -0.5rem;
 }
 
 .auth-icon {
-  width: 64px;
-  height: 64px;
+  width: 120px;
+  height: 120px;
   margin: 0 auto 1rem;
   color: var(--primary-color);
   animation: pulse 2s infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @keyframes pulse {
@@ -150,6 +154,7 @@ html, body {
   margin-bottom: 0.5rem;
   background: linear-gradient(135deg, var(--primary-color), #A0522D);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -202,6 +207,26 @@ html, body {
   color: var(--text-secondary);
   width: 1.25rem;
   height: 1.25rem;
+}
+
+.logo-circle {
+  position: absolute;
+  left: 0.75rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--primary-color);
+  overflow: hidden;
+}
+
+.logo-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .form-input {

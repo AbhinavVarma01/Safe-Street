@@ -184,7 +184,7 @@ const LoginRegister = () => {
 
         <div className="auth-header">
           <div className="auth-icon">
-            {isRegistering ? <User size={48} /> : <Mail size={48} />}
+            {isRegistering ? <User size={80} /> : <img src="/Logo.png" alt="SafeStreet Logo" style={{ width: '150px', height: '150px' }} />}
           </div>
           <h1 className="auth-title">SafeStreet</h1>
           <h2 className="auth-subtitle">Road Damage Detection</h2>
