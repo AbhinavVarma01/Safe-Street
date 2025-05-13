@@ -7,6 +7,7 @@ const RoadImageSchema = new mongoose.Schema({
     confidence: { type: Number, required: true },
     userEmail: { type: String, required: true },
     predictedImageUrl: { type: String },
+    damageDescription: { type: String },
     roadLocation: {
         address: { type: String, required: true },
         district: { type: String, required: true },
@@ -18,3 +19,4 @@ const RoadImageSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("RoadImage", RoadImageSchema);
+3

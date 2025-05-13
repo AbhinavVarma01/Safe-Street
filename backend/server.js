@@ -50,7 +50,8 @@ app.post("/api/upload", async (req, res) => {
             classification, 
             confidence, 
             userEmail, 
-            predictedImageUrl 
+            predictedImageUrl,
+            damageDescription
         } = req.body;
 
         // Fetch user's profile to get their address details
@@ -75,13 +76,14 @@ app.post("/api/upload", async (req, res) => {
             confidence: confidence,
             userEmail: userEmail,
             predictedImageUrl: predictedImageUrl,
+            damageDescription: damageDescription || '',
             roadLocation: {
                 address: user.address,
                 district: user.district,
                 pincode: user.pincode
             },
             status: 'Unseen', // Default status
-            progress: 'Unresolved' // Default progress
+            progress: 'Unresolved'
         });
 
         // Save the image
@@ -106,7 +108,7 @@ app.post("/api/upload", async (req, res) => {
 app.get("/api/images", async (req, res) => {
     try {
         const images = await RoadImage.find({});
-        console.log("📂 Retrieved Images from MongoDB:", images); // ✅ Debugging
+        console.log("📂 Retrieved Images from MongoDB:", images);
 
         if (images.length === 0) {
             console.log("❌ No images found in MongoDB");
@@ -126,7 +128,6 @@ app.put("/api/images/:id", async (req, res) => {
         const { id } = req.params;
         const { classification, status, progress } = req.body;
 
-        // Get the original image to check if progress changed to Resolved
         const originalImage = await RoadImage.findById(id);
         if (!originalImage) {
             return res.status(404).json({ error: "Image not found" });
@@ -141,7 +142,7 @@ app.put("/api/images/:id", async (req, res) => {
         const updatedImage = await RoadImage.findByIdAndUpdate(
             id,
             updateObj,
-            { new: true } // Return the updated document
+            { new: true }
         );
 
         // Create notification if progress changed to Resolved

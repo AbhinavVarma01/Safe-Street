@@ -185,9 +185,7 @@ def predict():
 
         class_names = ["Not Road", "Road"]
         classification = class_names[predicted.item()]
-
         logging.info(f"✅ Classified as {classification} with {confidence.item():.4f} confidence")
-
         return jsonify({
             'class': classification,
             'confidence': round(confidence.item(), 4),

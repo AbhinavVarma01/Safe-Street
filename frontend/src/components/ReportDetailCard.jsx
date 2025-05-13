@@ -233,6 +233,17 @@ const ReportDetailCard = ({ report, onClose, markAsSeen, markAsResolved }) => {
               </div>
             </div>
 
+            <div className="damage-description-card">
+              <h3>Damage Description</h3>
+              <div className="damage-description-content">
+                {report.damageDescription ? (
+                  <p>{report.damageDescription}</p>
+                ) : (
+                  <p className="no-description">No damage description provided</p>
+                )}
+              </div>
+            </div>
+
             {!hasPredicted && (
               <button className="analyze-button" onClick={handlePredict} disabled={isLoading}>
                 {isLoading ? (

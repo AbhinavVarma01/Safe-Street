@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../styles/NotificationBell.css';
+import './NotificationBell.css';
 
 const NotificationBell = ({ userEmail, onNavigateToHistory }) => {
   const [resolvedReports, setResolvedReports] = useState([]);
@@ -79,6 +79,30 @@ const NotificationBell = ({ userEmail, onNavigateToHistory }) => {
         {unreadCount > 0 && (
           <span className="notification-badge">{unreadCount}</span>
         )}
+      </div>
+      
+      <div className="info-button-container">
+        <div className="info-button">
+          <span role="img" aria-label="information">i</span>
+          <div className="status-tooltips">
+            <div className="tooltip-item">
+              <span className="status-label seen">Seen</span>
+              <span className="tooltip-desc">Authority viewed your report</span>
+            </div>
+            <div className="tooltip-item">
+              <span className="status-label unseen">Unseen</span>
+              <span className="tooltip-desc">Report not yet viewed</span>
+            </div>
+            <div className="tooltip-item">
+              <span className="progress-label resolved">Resolved</span>
+              <span className="tooltip-desc">Issue fixed by authorities</span>
+            </div>
+            <div className="tooltip-item">
+              <span className="progress-label unresolved">Unresolved</span>
+              <span className="tooltip-desc">Issue pending resolution</span>
+            </div>
+          </div>
+        </div>
       </div>
       
       {showNotifications && (

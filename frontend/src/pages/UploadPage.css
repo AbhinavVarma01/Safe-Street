@@ -627,6 +627,32 @@
   color: var(--text-secondary);
 }
 
+.damage-description-info {
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+}
+
+.description-content {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.95rem;
+  white-space: pre-wrap;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.damage-description-preview {
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
 .status-badge-container {
   position: absolute;
   bottom: 1rem;
@@ -708,6 +734,14 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+.input-group textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.5;
+  font-family: inherit;
+  margin-bottom: 0.5rem;
+}
+
 .read-only-field {
   background-color: #f5f5f5 !important;
   cursor: not-allowed;
@@ -727,9 +761,10 @@
   cursor: pointer;
 }
 
-.form-select:focus {
+.input-group input:focus, .input-group select:focus, .input-group textarea:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
 }
 
 .detail-group h3 {
@@ -907,9 +942,8 @@
 }
 
 .form-section {
-  /* Removed top border for cleaner look, rely on gap */
-  /* border-top: 1px solid var(--border-color, #e0e0e0); */
-  /* padding-top: 25px; */
+  margin-bottom: 25px;
+  padding-bottom: 10px;
 }
 
 .section-title {
@@ -1142,7 +1176,9 @@
 
 .history-table-wrapper {
   overflow-x: auto;
-  margin-top: 1rem;
+  margin-top: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   display: flex;
   justify-content: center; /* Center the table */
@@ -1562,6 +1598,120 @@
   color: #e65100;
   margin-bottom: 10px;
   text-align: center;
+}
+
+/* User Statistics Styles */
+.user-stats-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 25px;
+}
+
+.user-stat-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 20px 30px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  min-width: 150px;
+}
+
+.user-stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a73e8;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #5f6368;
+  font-weight: 500;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+  padding: 0 24px;
+}
+
+.pagination-button {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  color: #333;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 16px;
+  transition: all 0.2s ease;
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: #1a73e8;
+  color: white;
+  border-color: #1a73e8;
+}
+
+.pagination-button:disabled {
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.pagination-numbers {
+  display: flex;
+  margin: 0 10px;
+}
+
+.pagination-number {
+  width: 40px;
+  height: 40px;
+  margin: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.pagination-number:hover {
+  background-color: #1a73e8;
+  color: white;
+  border-color: #1a73e8;
+}
+
+.pagination-number.active {
+  background-color: #1a73e8;
+  color: white;
+  border-color: #1a73e8;
+}
+
+.page-indicator {
+  color: #555;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #f8f9fa;
 }
 
 .warning-popup p {

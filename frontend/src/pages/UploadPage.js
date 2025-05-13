@@ -54,7 +54,7 @@ function UploadPage() {
 
   console.log('[UploadPage] Email from localStorage:', userEmail);
   
-  const [activeTab, setActiveTab] = useState('details');
+  const [activeTab, setActiveTab] = useState('upload');
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [detailsComplete, setDetailsComplete] = useState(false);
 
@@ -71,7 +71,8 @@ function UploadPage() {
           email: userEmail,
           address: '',
           district: '',
-          pincode: ''
+          pincode: '',
+          damageDescription: ''
         })
       });
 
@@ -107,7 +108,7 @@ function UploadPage() {
             onClick={() => handleTabChange('details')}
             data-tab="details"
           >
-            <FileText size={20} /><span>Image Details</span>
+            <FileText size={20} /><span>Damage Details</span>
           </button>
           <button 
             className={`nav-item ${activeTab === 'upload' ? 'active' : ''}`} 
@@ -197,13 +198,18 @@ function UploadPage() {
 
 function UserDetailsForm({ userEmail, onDetailsUpdate }) {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
     address: '',
     district: '',
-    pincode: ''
+    pincode: '',
+    damageDescription: ''
   });
+
+  // Save damage description to localStorage whenever it changes
+  useEffect(() => {
+    if (formData.damageDescription) {
+      localStorage.setItem('damageDescription', formData.damageDescription);
+    }
+  }, [formData.damageDescription]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -232,12 +238,10 @@ function UserDetailsForm({ userEmail, onDetailsUpdate }) {
         if (response.ok && data.success && data.user) {
           const userData = data.user;
           setFormData({
-            firstName: userData.firstName || '',
-            lastName: userData.lastName || '',
-            phoneNumber: userData.phoneNumber || '',
             address: userData.address || '',
             district: userData.district || '',
-            pincode: userData.pincode || ''
+            pincode: userData.pincode || '',
+            damageDescription: userData.damageDescription || ''
           });
           setError('');
           checkDetailsCompleteness(userData);
@@ -298,12 +302,10 @@ function UserDetailsForm({ userEmail, onDetailsUpdate }) {
         setSuccessMessage("Profile details saved successfully!");
         const updatedUserData = data.user;
         setFormData({
-          firstName: updatedUserData.firstName || '',
-          lastName: updatedUserData.lastName || '',
-          phoneNumber: updatedUserData.phoneNumber || '',
           address: updatedUserData.address || '',
           district: updatedUserData.district || '',
-          pincode: updatedUserData.pincode || ''
+          pincode: updatedUserData.pincode || '',
+          damageDescription: updatedUserData.damageDescription || ''
         });
         checkDetailsCompleteness(updatedUserData);
       } else {
@@ -326,7 +328,7 @@ function UserDetailsForm({ userEmail, onDetailsUpdate }) {
   return (
     <div className="details-container">
       <div className="details-card">
-        <h2 className="details-header">Image Details</h2>
+        <h2 className="details-header">Damage Details</h2>
         <p className="details-subheader">
 Please keep your information up to date. Address details are required for image uploads.
         </p>
@@ -334,48 +336,6 @@ Please keep your information up to date. Address details are required for image 
         <form onSubmit={handleSaveDetails} className="details-form">
           {error && <p className="error-message form-message">{error}</p>}
           {successMessage && <p className="success-message form-message">{successMessage}</p>}
-
-          <div className="form-section">
-            <h3 className="section-title">Personal Information</h3>
-            <div className="form-grid two-columns">
-              <div className="input-group">
-                <label htmlFor="firstName">First Name *</label>
-                <input 
-                  type="text" 
-                  id="firstName" 
-                  name="firstName" 
-                  value={formData.firstName}
-                  readOnly
-                  className="read-only-field"
-                  required 
-                />
-              </div>
-              <div className="input-group">
-                <label htmlFor="lastName">Last Name *</label>
-                <input 
-                  type="text" 
-                  id="lastName" 
-                  name="lastName" 
-                  value={formData.lastName}
-                  readOnly
-                  className="read-only-field"
-                  required 
-                />
-              </div>
-            </div>
-            
-            <div className="input-group phone-input-group">
-                <label htmlFor="phoneNumber">Phone Number</label>
-                <input 
-                  type="tel" 
-                  id="phoneNumber" 
-                  name="phoneNumber" 
-                  value={formData.phoneNumber}
-                  readOnly
-                  className="read-only-field"
-                />
-             </div>
-          </div>
 
           <div className="form-section">
              <h3 className="section-title">Address Information</h3>
@@ -423,9 +383,23 @@ Please keep your information up to date. Address details are required for image 
                 />
               </div>
             </div>
+            
+            <div style={{ marginTop: '30px' }}></div>
+            <h3 className="section-title">Damage Description</h3>
+            <div className="input-group">
+              <label htmlFor="damageDescription">Describe the damage of road (Optional)</label>
+              <textarea
+                id="damageDescription"
+                name="damageDescription"
+                value={formData.damageDescription}
+                onChange={handleChange}
+                placeholder="Please describe the road damage in detail "
+                rows="4"
+              />
+            </div>
           </div>
           
-          <div className="form-actions">
+          <div className="form-actions" style={{ marginTop: '-30px' }}>
             <button type="submit" className="save-details-button" disabled={saving}>
               {saving ? 'Saving...' : 'Save Details'}
             </button>
@@ -485,8 +459,26 @@ function UploadComponent({ userEmail, detailsComplete, setActiveTab }) {
       <div className="upload-container" style={{ textAlign: 'center', padding: '40px' }}>
         <h2>Upload Road Image</h2>
         <p style={{ color: 'red', marginTop: '20px' }}>
-          Please complete your address details in the 'My Details' section before uploading images.
+          Please complete your address details in the 'Damage Details' section before uploading images.
         </p>
+        <button 
+          className="details-nav-button" 
+          onClick={() => setActiveTab('details')}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#1976D2',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            fontSize: '16px',
+            cursor: 'pointer',
+            marginTop: '20px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          Go to Damage Details
+        </button>
       </div>
     );
   }
@@ -621,13 +613,18 @@ function UploadComponent({ userEmail, detailsComplete, setActiveTab }) {
        
        const base64data = canvas.toDataURL('image/jpeg', 0.7);
 
+        // Get the damage description from localStorage instead of trying to access the form directly
+        // This works because we're storing it in localStorage when the user enters it in the details form
+        const damageDescription = localStorage.getItem('damageDescription') || '';
+       
        const payload = {
           imageName: image.name,
           imageUrl: base64data,
           classification: result.class,
           confidence: result.confidence,
           userEmail: userEmail,
-          predictedImageUrl: result.predictedImageUrl 
+          predictedImageUrl: result.predictedImageUrl,
+          damageDescription: damageDescription
        };
 
        try {
@@ -816,6 +813,8 @@ function PreviousUploads() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9; // Show 9 reports per page
 
   useEffect(() => {
     const fetchUploads = async () => {
@@ -835,7 +834,7 @@ function PreviousUploads() {
               ...upload,
               imageUrl: upload.imageUrl,
               status: upload.status || 'Unseen',
-              progress: upload.progress || 'Unresolved'
+              progress: upload.progress ||  'Unresolved'
             };
           }).sort((a, b) => 
             new Date(b.uploadedAt) - new Date(a.uploadedAt)
@@ -900,9 +899,40 @@ function PreviousUploads() {
     );
   }
 
+  // Calculate pagination variables
+  const totalPages = Math.ceil(uploads.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = uploads.slice(indexOfFirstItem, indexOfLastItem);
+  
+  // Handle page navigation
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const nextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
+  const prevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
+
+  // Calculate statistics
+  const totalReports = uploads.length;
+  const resolvedReports = uploads.filter(upload => upload.progress === 'Resolved').length;
+
   return (
     <div className="history-container">
       <h2>Your Upload History</h2>
+      
+      {/* User Statistics */}
+      <div className="user-stats-container">
+        <div className="user-stat-card">
+          <div className="stat-value">{totalReports}</div>
+          <div className="stat-label">Total Reports</div>
+        </div>
+        <div className="user-stat-card">
+          <div className="stat-value">{resolvedReports}</div>
+          <div className="stat-label">Resolved Reports</div>
+        </div>
+        <div className="user-stat-card">
+          <div className="stat-value">{totalReports > 0 ? ((resolvedReports / totalReports) * 100).toFixed(0) : 0}%</div>
+          <div className="stat-label">Resolution Rate</div>
+        </div>
+      </div>
       
       <div className="history-table-wrapper">
         <table className="history-table">
@@ -917,7 +947,7 @@ function PreviousUploads() {
             </tr>
           </thead>
           <tbody>
-        {uploads.map((upload, index) => (
+        {currentItems.map((upload, index) => (
               <tr key={index}>
                 <td>
                   <div className="history-thumbnail-container">
@@ -956,6 +986,39 @@ function PreviousUploads() {
           </tbody>
         </table>
       </div>
+      
+      {/* Pagination Controls */}
+      {uploads.length > itemsPerPage && (
+        <div className="pagination-controls">
+          <button 
+            onClick={prevPage} 
+            disabled={currentPage === 1}
+            className="pagination-button"
+          >
+            &laquo; Prev
+          </button>
+          
+          <div className="pagination-numbers">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+              <button
+                key={number}
+                onClick={() => paginate(number)}
+                className={`pagination-number ${currentPage === number ? 'active' : ''}`}
+              >
+                {number}
+              </button>
+            ))}
+          </div>
+          
+          <button 
+            onClick={nextPage} 
+            disabled={currentPage === totalPages}
+            className="pagination-button"
+          >
+            Next &raquo;
+          </button>
+        </div>
+      )}
 
       {/* Image Preview Modal */}
       {selectedImage && (
@@ -988,6 +1051,13 @@ function PreviousUploads() {
                 <div className="info-row">
                   <span className="info-label">Pincode:</span>
                   <span className="info-value">{selectedImage.roadLocation?.pincode || 'N/A'}</span>
+                </div>
+              </div>
+              
+              <h3>Damage Description</h3>
+              <div className="damage-description-info">
+                <div className="description-content">
+                  {selectedImage.damageDescription || 'No description provided'}
                 </div>
               </div>
             </div>

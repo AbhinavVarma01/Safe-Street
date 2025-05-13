@@ -25,8 +25,7 @@ const Authority = () => {
   const [stats, setStats] = useState({
     seen: 0,
     unseen: 0,
-    reviewed: 0,
-    pending: 0,
+
     resolved: 0
   });
 
@@ -51,6 +50,7 @@ const Authority = () => {
             userEmail: img.userEmail,
             uploadedAt: uploadedAt,
             roadLocation: img.roadLocation,
+            damageDescription: img.damageDescription || '',
             status: status,
             progress: progress,
             seen: status === 'Seen',
@@ -186,32 +186,27 @@ const Authority = () => {
     
     // STEP 2: Apply the appropriate status filter (simplified approach)
     if (resolvedFilter === 'resolved') {
-      // ONLY show resolved reports
       filtered = filtered.filter(report => report.progress === 'Resolved');
       console.log(`Authority: Showing ${filtered.length} resolved reports`);
     } 
     else if (seenFilter === 'seen') {
-      // ONLY show seen reports that are NOT resolved
       filtered = filtered.filter(report => 
         report.status === 'Seen' && report.progress !== 'Resolved'
       );
       console.log(`Authority: Showing ${filtered.length} seen (not resolved) reports`);
     } 
     else if (seenFilter === 'unseen') {
-      // ONLY show unseen reports that are NOT resolved
       filtered = filtered.filter(report => 
         report.status !== 'Seen' && report.progress !== 'Resolved'
       );
       console.log(`Authority: Showing ${filtered.length} unseen (not resolved) reports`);
     }
-    // If both filters are in default state (seenFilter='all' and resolvedFilter=''), show all reports
     
     console.log('Final filtered reports:', filtered.length);
     setFilteredReports(filtered);
   }, [reports, dateFilter, seenFilter, resolvedFilter]);
 
   const fetchReports = async () => {
-    // Set refreshing state to true to trigger animation
     setIsRefreshing(true);
     let hasError = false;
     
@@ -235,6 +230,7 @@ const Authority = () => {
             userEmail: img.userEmail,
             uploadedAt: uploadedAt,
             roadLocation: img.roadLocation,
+            damageDescription: img.damageDescription || '',
             status: status,
             progress: progress,
             seen: status === 'Seen', // For backwards compatibility

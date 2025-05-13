@@ -248,15 +248,18 @@ body.modal-open {
 }
 
 .location-card,
-.analysis-card {
+.analysis-card,
+.damage-description-card {
   background: #fff;
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 16px;
 }
 
 .location-card h3,
-.analysis-card h3 {
+.analysis-card h3,
+.damage-description-card h3 {
   margin: 0 0 16px 0;
   color: #1a1a1a;
   font-size: 18px;
@@ -303,6 +306,27 @@ body.modal-open {
 
 .map-link:hover {
   text-decoration: underline;
+}
+
+/* Damage description styles */
+.damage-description-content {
+  background-color: #f9f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.damage-description-content p {
+  margin: 0;
+  line-height: 1.6;
+  color: #333;
+  font-size: 15px;
+  white-space: pre-wrap;
+}
+
+.damage-description-content .no-description {
+  color: #888;
+  font-style: italic;
 }
 
 /* Analysis button */
@@ -535,7 +559,8 @@ body.modal-open {
   }
 
   .location-card,
-  .analysis-card {
+  .analysis-card,
+  .damage-description-card {
     padding: 16px;
   }
 }
